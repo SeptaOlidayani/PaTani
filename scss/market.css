@@ -1,0 +1,71 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+
+.judul-section {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    border-left: 5px solid #27ae60;
+    padding-left: 10px;
+}
+
+
+.produk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+
+.produk-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.produk-item:hover {
+    transform: translateY(-5px);
+}
+
+
+.produk-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+
+.produk-item strong {
+    display: block;
+    font-size: 16px;
+    color: #34495e;
+    margin-bottom: 5px;
+}
+
+
+.produk-item span,
+.produk-item br + Rp {
+    font-size: 14px;
+    color: #27ae60;
+    font-weight: bold;
+}
