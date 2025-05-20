@@ -1,0 +1,133 @@
+/* Keranjang Style - Sesuai dengan tema PaTani */
+
+body {
+  background-color: #f0fff4;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+h2 {
+  color: #28a745;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.table {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  background-color: #4aff9e;
+  color: #fff;
+  text-align: center;
+}
+
+.table td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table img {
+  max-width: 70px;
+  border-radius: 5px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+}
+
+.btn-success:hover,
+.btn-danger:hover {
+  opacity: 0.9;
+}
+
+.form-select {
+  max-width: 300px;
+  margin: 10px auto;
+}
+
+.alert {
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    padding: 10px;
+  }
+
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    padding-right: 10px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .form-select {
+    width: 100%;
+  }
+}
+
+/* scss/keranjang.css */
+
+body {
+  background-color: #f0fff4;
+}
+
+h2 {
+  color: #28a745;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.table {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
