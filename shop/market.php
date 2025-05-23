@@ -27,9 +27,21 @@ include('../navbar/bot_nav.php');
     <div class="produk-grid">
         <?php while ($row = mysqli_fetch_assoc($unggulan)) {?>
             <div class="produk-item">
-            <img src="../uploads/<?=($row['foto']) ?>" alt="<?=($row['nama_produk']) ?>">
-            <strong><?=($row['nama_produk']) ?></strong><br>
-            Rp<?= number_format($row['harga'],2)?>
+            <img src="../uploads/<?= htmlspecialchars($row['foto']) ?>" alt="<?= htmlspecialchars($row['nama_produk']) ?>">
+<strong><?= htmlspecialchars($row['nama_produk']) ?></strong><br>
+Rp <?= number_format($row['harga'], 0, ',', '.') ?>
+
+<!-- Tombol aksi hanya jika pembeli -->
+<?php if ($_SESSION['jenis'] === 'pembeli'): ?>
+    <div class="d-flex gap-2 mt-2">
+        <a href="../transactions/purchase.php?id_produk=<?= $row['id_produk']; ?>" class="btn btn-success btn-sm w-100">Beli</a>
+        <form action="../add_to_cart.php" method="GET" class="w-100">
+            <input type="hidden" name="id_produk" value="<?= $row['id_produk']; ?>">
+            <button type="submit" class="btn btn-warning btn-sm w-100">🛒</button>
+        </form>
+    </div>
+<?php endif; ?>
+
             </div> 
            
         <?php } ?>
@@ -40,9 +52,21 @@ include('../navbar/bot_nav.php');
     <div class="produk-grid">
         <?php while ($row = mysqli_fetch_assoc($terlaris)) {?>
             <div class="produk-item">
-            <img src="../uploads/<?=($row['foto']) ?>" alt="<?=($row['nama_produk']) ?>">
-            <strong><?=($row['total_terjual']) ?></strong><br>
-            Rp<?= number_format($row['harga'],2)?>
+            <img src="../uploads/<?= htmlspecialchars($row['foto']) ?>" alt="<?= htmlspecialchars($row['nama_produk']) ?>">
+<strong><?= htmlspecialchars($row['nama_produk']) ?></strong><br>
+Rp <?= number_format($row['harga'], 0, ',', '.') ?>
+
+<!-- Tombol aksi hanya jika pembeli -->
+<?php if ($_SESSION['jenis'] === 'pembeli'): ?>
+    <div class="d-flex gap-2 mt-2">
+        <a href="../transactions/purchase.php?id_produk=<?= $row['id_produk']; ?>" class="btn btn-success btn-sm w-100">Beli</a>
+        <form action="../add_to_cart.php" method="GET" class="w-100">
+            <input type="hidden" name="id_produk" value="<?= $row['id_produk']; ?>">
+            <button type="submit" class="btn btn-warning btn-sm w-100">🛒</button>
+        </form>
+    </div>
+<?php endif; ?>
+
             </div> 
 
         <?php } ?>

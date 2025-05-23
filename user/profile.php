@@ -21,9 +21,13 @@ $_SESSION['jenis'] = $user['jenis'];
     <link rel="stylesheet" href="../scss/profile.css">
     <link rel="stylesheet" href="../scss/style.css">
 </head>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 <body>
-
-<?php include('../navbar/nav.php'); ?>
 <?php include('../navbar/bot_nav.php'); ?>
 
 <div class="profile-container">

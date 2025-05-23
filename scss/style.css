@@ -185,56 +185,17 @@
     align-items: center;
     gap: 10px;
 }
+.chat-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff; /* jadi putih */
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-  .chat-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    background-color: #000000;
-    z-index: 9999;
-  }
 
-  .chat-messages {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-    background-color: #ffffff;
-  }
 
-  .chat-input {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    background-color: #fafafa;
-  }
-
-  .chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-  }
-
-  .chat-input button {
-    padding: 10px 20px;
-    background-color: #03b03c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .message {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-  }
   .login-container {
     background: white;
     padding: 2rem;
