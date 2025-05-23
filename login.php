@@ -25,7 +25,7 @@ if (isset($_SESSION['username'])) {
             <button id="petaniBtn" class="active" onclick="selectRole('petani')">Petani</button>
             <button id="pembeliBtn" onclick="selectRole('pembeli')">Pembeli</button>
         </div>
-        <form id="loginForm">
+        <form action="controllers/login_controller.php" method="POST">
             <input type="hidden" name="role" id="role" value="petani">
             <div class="form-group">
                 <input type="text" id="username" name="username" placeholder="Username" required>

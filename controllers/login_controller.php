@@ -20,6 +20,7 @@ if ($result->num_rows === 1) {
         $_SESSION['username'] = $user['username'];
         $_SESSION['jenis'] = $user['jenis'];
         echo json_encode(["success" => true, "message" => "Selamat datang, {$user['username']}!"]);
+        header("Location: ../index.php");
     } else {
         echo json_encode(["success" => false, "message" => "Password salah"]);
     }

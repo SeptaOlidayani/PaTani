@@ -28,6 +28,10 @@ if (!isset($_SESSION['username']) || $_SESSION['jenis'] != 'petani') {
             <input type="number" class="form-control" name="harga" required>
         </div>
         <div class="mb-3">
+            <label class="form-label">Kategori</label>
+            <input type="text" class="form-control" name="kategori" required>
+        </div>
+        <div class="mb-3">
             <label class="form-label">Stok</label>
             <input type="number" class="form-control" name="stok" required>
         </div>

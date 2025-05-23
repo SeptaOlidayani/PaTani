@@ -10,6 +10,7 @@ $username = $_SESSION['username'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_produk = $_POST['nama_produk'];
     $harga = $_POST['harga'];
+    $kategori = $_POST['kategori'];
     $stok = $_POST['stok'];
     $deskripsi = $_POST['deskripsi'];
 
@@ -23,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (move_uploaded_file($foto_tmp, $foto_path)) {
-        $query = "INSERT INTO produk (id_petani, nama_produk, harga, stok, deskripsi, tanggal, foto) 
+        $query = "INSERT INTO produk (id_petani, nama_produk, harga, kategori, stok, deskripsi, tanggal, foto) 
                   VALUES (?, ?, ?, ?, ?, NOW(), ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssdiss", $username, $nama_produk, $harga, $stok, $deskripsi, $foto_name);
+        $stmt->bind_param("ssdiss", $username, $nama_produk, $harga, $kategori, $stok, $deskripsi, $foto_name);
 
         if ($stmt->execute()) {
             header("Location: ../index.php?success=1");

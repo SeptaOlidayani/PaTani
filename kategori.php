@@ -99,59 +99,59 @@ include('navbar/bot_nav.php');
         </div>
     </div>
 
-    <!-- Grid Produk -->
-    <div class="produk-section">
-        <?php if ($result->num_rows > 0): ?>
-            <div class="row g-4">
-                <?php while ($produk = $result->fetch_assoc()): ?>
-                    <div class="col-md-4 col-lg-3">
-                        <div class="produk-card">
-                            <div class="produk-image">
-                                <img src="uploads/<?= htmlspecialchars($produk['foto']); ?>" 
-                                     alt="<?= htmlspecialchars($produk['nama_produk']); ?>">
-                                <div class="produk-badge">
-                                    <?php
-                                    $kategori_icons = [
-                                        'sayuran' => '🥬',
-                                        'buah' => '🍎',
-                                        'beras' => '🌾',
-                                        'rempah' => '🌿',
-                                        'umbi' => '🥔',
-                                        'kacang' => '🥜'
-                                    ];
-                                    echo $kategori_icons[$produk['kategori']] ?? '📦';
-                                    ?>
-                                </div>
-                            </div>
-                            <div class="produk-content">
-                                <h5 class="produk-title"><?= htmlspecialchars($produk['nama_produk']); ?></h5>
-                                <p class="produk-price">Rp <?= number_format($produk['harga'], 0, ',', '.'); ?></p>
-                                <div class="produk-info">
-                                    <span class="stok">Stok: <?= $produk['stok']; ?> kg</span>
-                                    <span class="tanggal"><?= date('d M Y', strtotime($produk['tanggal'])); ?></span>
-                                </div>
-                                <?php if ($jenis_user === 'pembeli'): ?>
-                                    <div class="produk-actions">
-                                        <a href="transactions/purchase.php?id_produk=<?= $produk['id_produk']; ?>" 
-                                           class="btn-beli">
-                                            <span>🛒</span> Beli Sekarang
-                                        </a>
-                                    </div>
-                                <?php endif; ?>
+<div class="produk-section">
+    <?php if (count($kategori_list) > 0): ?>
+        <div class="row g-4">
+            <?php foreach ($kategori_list as $produk): ?>
+                <div class="col-md-4 col-lg-3">
+                    <div class="produk-card">
+                        <div class="produk-image">
+                            <img src="uploads/<?= htmlspecialchars($produk['foto']); ?>" 
+                                 alt="<?= htmlspecialchars($produk['nama_produk']); ?>">
+                            <div class="produk-badge">
+                                <?php
+                                $kategori_icons = [
+                                    'sayuran' => '🥬',
+                                    'buah' => '🍎',
+                                    'beras' => '🌾',
+                                    'rempah' => '🌿',
+                                    'umbi' => '🥔',
+                                    'kacang' => '🥜'
+                                ];
+                                echo $kategori_icons[$produk['kategori']] ?? '📦';
+                                ?>
                             </div>
                         </div>
+                        <div class="produk-content">
+                            <h5 class="produk-title"><?= htmlspecialchars($produk['nama_produk']); ?></h5>
+                            <p class="produk-price">Rp <?= number_format($produk['harga'], 0, ',', '.'); ?></p>
+                            <div class="produk-info">
+                                <span class="stok">Stok: <?= $produk['stok']; ?> kg</span>
+                                <span class="tanggal"><?= date('d M Y', strtotime($produk['tanggal'])); ?></span>
+                            </div>
+                            <?php if ($jenis_user === 'pembeli'): ?>
+                                <div class="produk-actions">
+                                    <a href="transactions/purchase.php?id_produk=<?= $produk['id_produk']; ?>" 
+                                       class="btn-beli">
+                                        <span>🛒</span> Beli Sekarang
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                <?php endwhile; ?>
-            </div>
-        <?php else: ?>
-            <div class="empty-state">
-                <div class="empty-icon">📦</div>
-                <h3>Belum Ada Produk</h3>
-                <p>Maaf, belum ada produk dalam kategori "<?= $kategori_list[$kategori_selected] ?>" saat ini.</p>
-                <a href="?kategori=semua" class="btn-back">← Lihat Semua Produk</a>
-            </div>
-        <?php endif; ?>
-    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>Belum Ada Produk</h3>
+            <p>Maaf, belum ada produk dalam kategori "<?= $kategori_list[$kategori_selected] ?>" saat ini.</p>
+            <a href="?kategori=semua" class="btn-back">← Lihat Semua Produk</a>
+        </div>
+    <?php endif; ?>
+</div>
+
 </div>
 
 <script src="js/bootstrap.bundle.min.js"></script>
