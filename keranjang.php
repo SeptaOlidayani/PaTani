@@ -37,10 +37,9 @@ $grand_total = 0;
             text-align: center;
         }
         .table thead th {
-    background-color: #e8f5e9; /* Hijau muda lembut */
-    color: #2e7d32;            /* Hijau utama */
-}
-
+        color: #2e7d32;
+        background-color: #e8f5e9;
+    }
     </style>
 </head>
 <body>
