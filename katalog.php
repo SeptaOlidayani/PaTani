@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once("config/db.php");
+
+$jenis_user = $_SESSION['jenis'] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -17,46 +19,6 @@ require_once("config/db.php");
             margin: 0;
             padding: 0;
         }
-
-        .filters {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .filter-section {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .filter-group label {
-        font-weight: 500;
-        color: #2e7d32;
-    }
-
-    .filter-group select {
-        padding: 0.5rem 1rem;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        outline: none;
-        transition: border-color 0.3s;
-    }
-
-    .filter-group select:focus {
-        border-color: #4caf50;
-    }
-
-
         .catalog-header {
             text-align: center;
             background-color: #4caf50;
@@ -69,6 +31,38 @@ require_once("config/db.php");
         }
         .catalog-header p {
             margin-top: 0.5rem;
+        }
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .filter-group label {
+            font-weight: 500;
+            color: #2e7d32;
+        }
+        .filter-group select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .filter-group select:focus {
+            border-color: #4caf50;
         }
         .products-grid {
             display: grid;
@@ -143,83 +137,89 @@ require_once("config/db.php");
             background-color: #ff9800;
             color: white;
         }
+
     </style>
 </head>
 <body>
 
-    <div class="catalog-header">
-        <h1>Katalog Produk Segar</h1>
-        <p>Produk pilihan langsung dari petani terbaik</p>
-    </div>
-    <div class="filters">
-        <div class="filter-section">
-            <div class="filter-group">
-                <label for="category">Kategori:</label>
-                <select id="category">
-                    <option value="">Semua Kategori</option>
-                    <option value="buah">Buah-buahan</option>
-                    <option value="sayur">Sayuran</option>
-                    <option value="biji">Biji-bijian</option>
-                    <option value="rempah">Rempah-rempah</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="price">Harga:</label>
-                <select id="price">
-                    <option value="">Semua Harga</option>
-                    <option value="0-20000">< Rp 20.000</option>
-                    <option value="20000-50000">Rp 20.000 - 50.000</option>
-                    <option value="50000+">Rp 50.000 +</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="sort">Urutkan:</label>
-                <select id="sort">
-                    <option value="newest">Terbaru</option>
-                    <option value="price-low">Harga Terendah</option>
-                    <option value="price-high">Harga Tertinggi</option>
-                    <option value="popular">Terpopuler</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="products-grid">
-        <?php
-        $query = "SELECT * FROM produk ORDER BY tanggal DESC";
-        $result = mysqli_query($conn, $query);
-        while ($produk = mysqli_fetch_assoc($result)) {
-            $foto = htmlspecialchars($produk['foto']);
-            $nama = htmlspecialchars($produk['nama_produk']);
-            $harga = number_format($produk['harga'], 0, ',', '.');
-            $stok = htmlspecialchars($produk['stok']);
-            $deskripsi = htmlspecialchars($produk['deskripsi']);
-            $id = $produk['id_produk'];
-
-            echo "
-            <div class='product-card'>
-                <div class='product-image' style='background-image: url(\"uploads/$foto\")'></div>
-                <div class='product-info'>
-                    <div class='product-name'>$nama</div>
-                    <div class='product-description'>$deskripsi</div>
-                    <div class='product-details'>
-                        <div class='price'>Rp $harga</div>
-                        <div class='stock'>Stok: $stok</div>
-                    </div>
-                    <div class='product-actions' style='display: flex; gap: 10px;'>
-    <a href='transactions/purchase.php?id_produk=$id' class='btn btn-success btn-sm' style='flex: 1;'>Beli</a>
-    <form action='add_to_cart.php' method='GET' style='flex: 1;'>
-        <input type='hidden' name='id_produk' value='$id'>
-        <button type='submit' class='btn btn-warning btn-sm w-100'>🛒</button>
-    </form>
+<div class="catalog-header">
+    <h1>Katalog Produk Segar</h1>
+    <p>Produk pilihan langsung dari petani terbaik</p>
 </div>
 
-                </div>
-            </div>
-            ";
-        }
-        ?>
+<div class="filters">
+    <div class="filter-section">
+        <div class="filter-group">
+            <label for="category">Kategori:</label>
+            <select id="category">
+                <option value="">Semua Kategori</option>
+                <option value="buah">Buah-buahan</option>
+                <option value="sayur">Sayuran</option>
+                <option value="biji">Biji-bijian</option>
+                <option value="rempah">Rempah-rempah</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="price">Harga:</label>
+            <select id="price">
+                <option value="">Semua Harga</option>
+                <option value="0-20000">&lt; Rp 20.000</option>
+                <option value="20000-50000">Rp 20.000 - 50.000</option>
+                <option value="50000+">&gt; Rp 50.000</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="sort">Urutkan:</label>
+            <select id="sort">
+                <option value="newest">Terbaru</option>
+                <option value="price-low">Harga Terendah</option>
+                <option value="price-high">Harga Tertinggi</option>
+                <option value="popular">Terpopuler</option>
+            </select>
+        </div>
     </div>
+</div>
+
+<div class="products-grid">
+    <?php
+    $query = "SELECT * FROM produk ORDER BY tanggal DESC";
+    $result = mysqli_query($conn, $query);
+    while ($produk = mysqli_fetch_assoc($result)) {
+        $foto = htmlspecialchars($produk['foto']);
+        $nama = htmlspecialchars($produk['nama_produk']);
+        $harga = number_format($produk['harga'], 0, ',', '.');
+        $stok = htmlspecialchars($produk['stok']);
+        $deskripsi = htmlspecialchars($produk['deskripsi']);
+        $id = $produk['id_produk'];
+
+        echo "
+        <div class='product-card'>
+            <div class='product-image' style='background-image: url(\"uploads/$foto\")'></div>
+            <div class='product-info'>
+                <div class='product-name'>$nama</div>
+                <div class='product-description'>$deskripsi</div>
+                <div class='product-details'>
+                    <div class='price'>Rp $harga</div>
+                    <div class='stock'>Stok: $stok</div>
+                </div>";
+
+        if ($jenis_user !== 'petani') {
+            echo "
+                <div class='product-actions'>
+                    <a href='transactions/purchase.php?id_produk=$id' class='btn btn-success btn-sm'>Beli</a>
+                    <form action='add_to_cart.php' method='GET'>
+                        <input type='hidden' name='id_produk' value='$id'>
+                        <button type='submit' class='btn btn-warning btn-sm w-100'>🛒</button>
+                    </form>
+                </div>";
+        }
+
+        echo "
+            </div>
+        </div>";
+    }
+    ?>
+</div>
 
 </body>
 </html>

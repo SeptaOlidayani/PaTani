@@ -27,6 +27,7 @@ $grand_total = 0;
     <link rel="stylesheet" href="scss/keranjang.css">
     <link rel="stylesheet" href="scss/navbar.css">
     <style>
+
         .item-check {
             display: none;
             margin-top: 8px;
@@ -35,6 +36,11 @@ $grand_total = 0;
             width: 60px;
             text-align: center;
         }
+        .table thead th {
+    background-color: #e8f5e9; /* Hijau muda lembut */
+    color: #2e7d32;            /* Hijau utama */
+}
+
     </style>
 </head>
 <body>
@@ -93,9 +99,10 @@ $grand_total = 0;
             <div class="mb-3">
                 <label for="metode_pembayaran" class="form-label">Pilih Metode Pembayaran</label>
                 <select name="metode_pembayaran" id="metode_pembayaran" class="form-select" required>
-                    <option value="COD">COD</option>
-                    <option value="Transfer Bank">Transfer Bank</option>
-                    <option value="E-Wallet">E-Wallet</option>
+                <option value="">-- Pilih Metode Pembayaran --</option>
+                        <option value="Transfer Bank">Transfer Bank</option>
+                        <option value="E-Wallet">E-Wallet (OVO, DANA, dsb)</option>
+                        <option value="COD">Cash on Delivery (COD)</option>
                 </select>
             </div>
 
