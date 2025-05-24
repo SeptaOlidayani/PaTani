@@ -60,7 +60,7 @@ $query = mysqli_query($conn, "SELECT * FROM transaksi WHERE id_petani = '$userna
             </tbody>
         </table>
     <?php else: ?>
-        <div class="alert alert-info text-center">Tidak ada transaksi yang menunggu konfirmasi.</div>
+        <div class="alert alert-info text-center">Tidak ada transaksiiii  yang menunggu konfirmasi.</div>
     <?php endif; ?>
 </div>
 
