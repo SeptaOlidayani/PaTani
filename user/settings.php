@@ -18,9 +18,6 @@ function getUserByUsername($conn, $username)
 $username = $_SESSION['username'];
 $user = getUserByUsername($conn, $username);
 ?>
-<!-- lalu HTML view seperti biasa -->
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -55,7 +52,11 @@ $user = getUserByUsername($conn, $username);
             <input type="text" name="no_telp" class="form-control" value="<?= htmlspecialchars($user['no_telp']) ?>" required>
         </div>
 
-        <button type="submit" name="update_profile" class="btn btn-success">💾 Simpan Perubahan</button>
+        <div class="d-grid gap-2 mt-3">
+            <button type="submit" name="update_profile" class="btn btn-success">
+                💾 Simpan Perubahan
+            </button>
+        </div>
     </form>
 
     <hr>
@@ -74,11 +75,21 @@ $user = getUserByUsername($conn, $username);
             <label>Konfirmasi Password Baru</label>
             <input type="password" name="confirm_password" class="form-control" required>
         </div>
-        <button type="submit" name="change_password" class="btn btn-warning">🔁 Ganti Password</button>
+
+        <div class="d-grid gap-2 mt-3">
+            <button type="submit" name="change_password" class="btn btn-warning">
+                🔁 Ganti Password
+            </button>
+        </div>
     </form>
 
     <hr>
-    <a href="../logout.php" class="btn btn-danger">🚪 Logout</a>
+
+    <div class="d-grid gap-2 mt-3">
+        <a href="../logout.php" class="btn btn-danger">
+            🚪 Logout
+        </a>
+    </div>
 </div>
 
 <script src="../js/bootstrap.bundle.min.js"></script>
