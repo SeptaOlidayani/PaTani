@@ -59,7 +59,7 @@ $grand_total = 0;
                         <th>Produk</th>
                         <th>Harga</th>
                         <th>Jumlah</th>
-                        <th>Total</th>
+                        <th>Total Produk</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
