@@ -143,12 +143,25 @@ payButton.addEventListener('click', function (event) {
             window.snap.pay(res.token, {
                 onSuccess: function(result) {
                     alert("Pembayaran berhasil!");
-                    // Simpan ke database jika perlu, atau redirect
-                    window.location.href = "../thank_you.php?order_id=" + res.order_id;
+
+                    const formData = new FormData(document.querySelector('form'));
+
+                    fetch("../controllers/purchase_controller.php", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(response => {
+                        console.log("Respon simpan:", response);
+                        window.location.href = "../index.php";
+                    })
+                    .catch(error => {
+                        console.error("Gagal menyimpan ke database:", error);
+                        alert("Pembayaran berhasil tapi gagal menyimpan data.");
+                    });
                 },
                 onPending: function(result) {
                     alert("Menunggu pembayaran.");
-                    window.location.href = "../thank_you.php?order_id=" + res.order_id;
                 },
                 onError: function(result) {
                     alert("Pembayaran gagal!");

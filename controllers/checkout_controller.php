@@ -3,55 +3,47 @@ session_start();
 require_once("../config/db.php");
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../login.php");
-    exit;
+    die("Akses ditolak. Harap login terlebih dahulu.");
 }
 
+// Ambil ID konsumen dari session
 $username = $_SESSION['username'];
+$user_query = mysqli_query($conn, "SELECT id_user FROM user WHERE username = '$username'");
+$user_data = mysqli_fetch_assoc($user_query);
+$id_konsumen = $user_data['id_user'] ?? null;
 
-$selected = $_POST['selected'] ?? [];
-$jumlahList = $_POST['jumlah'] ?? [];
-$metode = $_POST['metode_pembayaran'] ?? '';
-
-if (empty($selected) || empty($metode)) {
-    echo "<script>alert('Pilih produk dan metode pembayaran!'); window.history.back();</script>";
-    exit;
+if (!$id_konsumen) {
+    die("User tidak ditemukan.");
 }
 
-foreach ($selected as $id_keranjang) {
-    // Pastikan input valid
-    $id_keranjang = intval($id_keranjang);
-    $jumlah = isset($jumlahList[$id_keranjang]) ? intval($jumlahList[$id_keranjang]) : 1;
-    if ($jumlah < 1) $jumlah = 1;
+// Ambil data dari form
+$id_petani = $_POST['id_petani'];
+$id_produk = $_POST['id_produk'];
+$jumlah = $_POST['jumlah'];
+$harga_satuan = $_POST['harga'];
+$alamat = mysqli_real_escape_string($conn, $_POST['alamat']);
+$ongkir = $_POST['ongkir'];
+$jarak_km = $_POST['jarak_km'];
+$estimasi_kirim = $_POST['estimasi_kirim'];
+$kurir = $_POST['kurir'];
+$metode_pembayaran = $_POST['metode_pembayaran'];
+$tanggal_transaksi = date("Y-m-d H:i:s");
 
-    // Ambil info produk dari keranjang
-    $query = mysqli_query($conn, "SELECT p.id_produk, p.id_petani, p.nama_produk, p.harga 
-                                  FROM keranjang k 
-                                  JOIN produk p ON k.id_produk = p.id_produk 
-                                  WHERE k.id_keranjang = $id_keranjang AND k.username = '$username'");
-    
-    if (!$query || mysqli_num_rows($query) == 0) continue;
+$total_harga = ($harga_satuan * $jumlah) + $ongkir;
 
-    $data = mysqli_fetch_assoc($query);
+// Insert transaksi
+$insert = mysqli_query($conn, "INSERT INTO transaksi (
+    id_konsumen, id_petani, id_produk, jumlah, total_harga, ongkir, jarak_km, estimasi_kirim, kurir, alamat, metode_pembayaran, status, tanggal_transaksi
+) VALUES (
+    '$id_konsumen', '$id_petani', '$id_produk', '$jumlah', '$total_harga', '$ongkir', '$jarak_km', '$estimasi_kirim', '$kurir', '$alamat', '$metode_pembayaran', 'Menunggu Konfirmasi', '$tanggal_transaksi'
+)");
 
-    $id_produk = $data['id_produk'];
-    $id_petani = $data['id_petani'];
-    $nama_produk = $data['nama_produk'];
-    $harga = (int)$data['harga'];
-    $total_harga = $harga * $jumlah;
+if ($insert) {
+    // Update stok produk
+    mysqli_query($conn, "UPDATE produk SET stok = stok - $jumlah WHERE id_produk = $id_produk");
 
-    // Simpan ke tabel transaksi
-    $insert = mysqli_query($conn, "INSERT INTO transaksi 
-        (id_konsumen, id_petani, id_produk, produk, jumlah, total_harga, metode, status) 
-        VALUES 
-        ('$username', '$id_petani', '$id_produk', '$nama_produk', $jumlah, $total_harga, '$metode', 'menunggu konfirmasi')");
-
-    // Hapus dari keranjang
-    if ($insert) {
-        mysqli_query($conn, "DELETE FROM keranjang WHERE id_keranjang = $id_keranjang AND username = '$username'");
-    }
+    echo "success";
+} else {
+    echo "Gagal menyimpan transaksi: " . mysqli_error($conn);
 }
-
-echo "<script>alert('Checkout berhasil!'); window.location.href = '../index.php';</script>";
-exit;
 ?>

@@ -35,6 +35,8 @@ function hitungJarak($lat1, $lon1, $lat2, $lon2) {
     <title>PakTani</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="scss/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -107,7 +109,7 @@ include('navbar/bot_nav.php');
                         
                         <?php if ($jenis_user === 'pembeli'): ?>
                             <p class="card-text text-muted mb-2">
-                                <small>📍 <?= htmlspecialchars($produk['alamat']); ?><?= $jarak ? " (± {$jarak} km)" : '' ?></small>
+                                <small><i class="fa-solid fa-location-dot text-danger"></i> <?= htmlspecialchars($produk['alamat']); ?><?= $jarak ? " (± {$jarak} km)" : '' ?></small>
                             </p>
                         <?php endif; ?>
 
