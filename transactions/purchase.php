@@ -14,27 +14,8 @@ if (!$produk){
     exit;
 }
 
-// Ambil data lokasi pembeli & petani
-$username = $_SESSION['username'];
-$qUser = mysqli_query($conn, "SELECT latitude, longitude FROM user WHERE username = '$username'");
-$userLoc = mysqli_fetch_assoc($qUser);
-
-$qPetani = mysqli_query($conn, "SELECT latitude, longitude FROM user WHERE username = '{$produk['id_petani']}'");
-$petaniLoc = mysqli_fetch_assoc($qPetani);
-
-// Hitung jarak
-function hitungJarak($lat1, $lon1, $lat2, $lon2) {
-    $earthRadius = 6371; // km
-    $dLat = deg2rad($lat2 - $lat1);
-    $dLon = deg2rad($lon2 - $lon1);
-    $lat1 = deg2rad($lat1);
-    $lat2 = deg2rad($lat2);
-    $a = sin($dLat / 2) ** 2 +
-         sin($dLon / 2) ** 2 * cos($lat1) * cos($lat2);
-    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-    return round($earthRadius * $c, 1);
-}
-$jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['latitude'], $petaniLoc['longitude']);
+// Isi manual nama kecamatan petani (karena tidak ambil dari DB user)
+$kecamatan_petani_default = "Sukadana"; // <- ubah sesuai produk/petani terkait
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -47,6 +28,9 @@ $jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['la
         .jumlah-wrapper { display: flex; gap: 5px; align-items: center; }
         .jumlah-wrapper input { text-align: center; width: 80px; }
     </style>
+    <script type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="SB-Mid-client-M9wHfTZ_CV_nJKf3"></script>
 </head>
 <body>
 <div class="container mt-4">
@@ -59,7 +43,7 @@ $jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['la
                 <input type="hidden" name="id_produk" value="<?= $produk['id_produk'] ?>">
                 <input type="hidden" name="nama_produk" value="<?= htmlspecialchars($produk['nama_produk']) ?>">
                 <input type="hidden" name="harga" value="<?= $produk['harga'] ?>">
-                <input type="hidden" name="jarak_km" value="<?= $jarak ?>" id="jarak_value">
+                <input type="hidden" name="jarak_km" id="jarak_value">
                 <input type="hidden" name="ongkir" id="ongkir_value">
                 <input type="hidden" name="estimasi_kirim" id="estimasi_value">
 
@@ -73,7 +57,29 @@ $jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['la
                         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="tambahJumlah()">+</button>
                     </div>
                 </div>
-                <div class="mb-3"><label>Total Harga + Ongkir</label><input type="text" class="form-control" id="total_harga" disabled></div>
+
+                <div class="mb-3">
+                    <input type="hidden" id="kecamatan_petani_value" value="<?= $kecamatan_petani_default ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label>Kecamatan Pembeli</label>
+                    <select id="kecamatan_pembeli" name="kecamatan_pembeli" class="form-select" required>
+                        <option value="">-- Pilih Kecamatan Anda --</option>
+                        <option value="Sukadana">Sukadana</option>
+                        <option value="Sekampung">Sekampung</option>
+                        <option value="Pekalongan">Pekalongan</option>
+                        <option value="Way Jepara">Way Jepara</option>
+                        <option value="Labuhan Ratu">Labuhan Ratu</option>
+                        <option value="Batanghari">Batanghari</option>
+                        <!-- Tambahkan sesuai daftar kecamatan di Lampung Timur -->
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Alamat Pengiriman</label>
+                    <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukan Alamat Pengiriman"></textarea>
+                </div>
 
                 <div class="mb-3">
                     <label>Kurir</label>
@@ -86,16 +92,19 @@ $jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['la
 
                 <div class="mb-3">
                     <label>Ongkos Kirim</label>
-                    <p id="ongkir_label">Rp -</p>
+                    <p id="ongkir_label">-</p>
                 </div>
+
                 <div class="mb-3">
                     <label>Estimasi Pengiriman</label>
                     <p id="estimasi_label">-</p>
                 </div>
 
+                <div class="mb-3"><label>Total Harga + Ongkir</label><input type="text" class="form-control" id="total_harga" disabled></div>
+
                 <div class="mb-3">
                     <label>Metode Pembayaran</label>
-                    <select class="form-select" name="metode_pembayaran" required>
+                    <select class="form-select" name="metode_pembayaran">
                         <option value="">-- Pilih Metode --</option>
                         <option value="Transfer Bank">Transfer Bank</option>
                         <option value="E-Wallet">E-Wallet</option>
@@ -103,59 +112,135 @@ $jarak = hitungJarak($userLoc['latitude'], $userLoc['longitude'], $petaniLoc['la
                     </select>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success">Beli Sekarang</button>
+                    <button id="payButton" type="button" class="btn btn-success">Beli Sekarang</button>
                     <a href="../index.php" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+payButton.addEventListener('click', function (event) {
+    event.preventDefault(); // Jangan langsung submit form
+
+    const data = {
+        id_produk: <?= $produk['id_produk'] ?>,
+        nama_produk: "<?= htmlspecialchars($produk['nama_produk']) ?>",
+        jumlah: parseInt(jumlahInput.value),
+        harga: <?= $produk['harga'] ?>,
+        total: harga * parseInt(jumlahInput.value) + parseInt(ongkirInput.value),
+        nama: "<?= $_SESSION['username'] ?>", // Ganti dengan data user dari session
+    };
+
+    fetch('./midtrans.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.token) {
+            window.snap.pay(res.token, {
+                onSuccess: function(result) {
+                    alert("Pembayaran berhasil!");
+                    // Simpan ke database jika perlu, atau redirect
+                    window.location.href = "../thank_you.php?order_id=" + res.order_id;
+                },
+                onPending: function(result) {
+                    alert("Menunggu pembayaran.");
+                    window.location.href = "../thank_you.php?order_id=" + res.order_id;
+                },
+                onError: function(result) {
+                    alert("Pembayaran gagal!");
+                },
+                onClose: function() {
+                    alert("Transaksi dibatalkan.");
+                }
+            });
+        } else {
+            alert("Gagal mendapatkan token Midtrans: " + res.error);
+        }
+    });
+});
+</script>
 
 <script>
+const harga = <?= $produk['harga'] ?>;
 const jumlahInput = document.getElementById('jumlah');
 const totalHargaInput = document.getElementById('total_harga');
-const harga = <?= $produk['harga'] ?>;
-const jarak = <?= $jarak ?>;
+const ongkirInput = document.getElementById('ongkir_value');
+const estimasiInput = document.getElementById('estimasi_value');
+const jarakInput = document.getElementById('jarak_value');
+const ongkirLabel = document.getElementById('ongkir_label');
+const estimasiLabel = document.getElementById('estimasi_label');
+const kecamatanPembeli = document.getElementById('kecamatan_pembeli');
+const kecamatanPetani = document.getElementById('kecamatan_petani_value');
+const kurirSelect = document.getElementById('kurir');
 
-function updateTotal() {
-    const jumlah = parseInt(jumlahInput.value) || 1;
-    const ongkir = parseInt(document.getElementById('ongkir_value').value) || 0;
-    const total = harga * jumlah + ongkir;
-    totalHargaInput.value = 'Rp ' + total.toLocaleString('id-ID');
-}
+const tarifPerKm = { tiki: 0, jne: 3000, pos: 3000 };
+const estimasiKurir = {
+    tiki: "Bisa Diambil Hari Ini",
+    jne: "1 - 2 Hari",
+    pos: "2 - 3 Hari"
+};
 
-function tambahJumlah() {
-    if (parseInt(jumlahInput.value) < <?= $produk['stok'] ?>) {
-        jumlahInput.value = parseInt(jumlahInput.value) + 1;
-        updateTotal();
+// Data jarak antar kecamatan (km)
+const jarakKecamatan = {
+    "Sukadana": {"Sukadana": 0, "Sekampung": 8, "Pekalongan": 6, "Way Jepara": 12, "Labuhan Ratu": 15, "Batanghari": 10},
+    "Sekampung": {"Sukadana": 8, "Sekampung": 0, "Pekalongan": 5, "Way Jepara": 10, "Labuhan Ratu": 13, "Batanghari": 6},
+    "Pekalongan": {"Sukadana": 6, "Sekampung": 5, "Pekalongan": 0, "Way Jepara": 8, "Labuhan Ratu": 14, "Batanghari": 7},
+    "Way Jepara": {"Sukadana": 12, "Sekampung": 10, "Pekalongan": 8, "Way Jepara": 0, "Labuhan Ratu": 7, "Batanghari": 9},
+    "Labuhan Ratu": {"Sukadana": 15, "Sekampung": 13, "Pekalongan": 14, "Way Jepara": 7, "Labuhan Ratu": 0, "Batanghari": 11},
+    "Batanghari": {"Sukadana": 10, "Sekampung": 6, "Pekalongan": 7, "Way Jepara": 9, "Labuhan Ratu": 11, "Batanghari": 0},
+};
+
+function hitungJarakKm(kecPembeli, kecPetani) {
+    if (jarakKecamatan[kecPembeli] && jarakKecamatan[kecPembeli][kecPetani]) {
+        return jarakKecamatan[kecPembeli][kecPetani];
     }
-}
-function kurangJumlah() {
-    if (parseInt(jumlahInput.value) > 1) {
-        jumlahInput.value = parseInt(jumlahInput.value) - 1;
-        updateTotal();
-    }
+    return 0;
 }
 
-function hitungOngkirDanEstimasi(jarak, kurir) {
-    let tarif = {'tiki': 0, 'jne': 3000, 'pos': 4000};
-    let estimasi = {'tiki': 'Bisa Diambil Hari Ini', 'jne': '1 - 2 Hari', 'pos': '2 - 3 Hari'};
+function updateOngkirEstimasi() {
+    const pembeli = kecamatanPembeli.value;
+    const petani = kecamatanPetani.value;
+    const kurir = kurirSelect.value;
+    const tarif = tarifPerKm[kurir] || 0;
+    const estimasi = estimasiKurir[kurir] || "-";
 
-    let ongkir = Math.ceil(jarak * (tarif[kurir] || 0));
-    document.getElementById('ongkir_value').value = ongkir;
-    document.getElementById('estimasi_value').value = estimasi[kurir] || '-';
-    document.getElementById('ongkir_label').textContent = 'Rp ' + ongkir.toLocaleString('id-ID');
-    document.getElementById('estimasi_label').textContent = estimasi[kurir] || '-';
+    const jarak = hitungJarakKm(pembeli, petani);
+    const ongkir = Math.ceil(jarak * tarif);
+
+    jarakInput.value = jarak;
+    ongkirInput.value = ongkir;
+    estimasiInput.value = estimasi;
+    ongkirLabel.textContent = "Rp " + ongkir.toLocaleString('id-ID');
+    estimasiLabel.textContent = estimasi;
+
     updateTotal();
 }
 
-document.getElementById('kurir').addEventListener('change', function() {
-    hitungOngkirDanEstimasi(jarak, this.value);
-});
+function updateTotal() {
+    const jumlah = parseInt(jumlahInput.value) || 1;
+    const ongkir = parseInt(ongkirInput.value) || 0;
+    const total = harga * jumlah + ongkir;
+    totalHargaInput.value = "Rp " + total.toLocaleString('id-ID');
+}
 
-window.addEventListener('DOMContentLoaded', () => {
-    hitungOngkirDanEstimasi(jarak, document.getElementById('kurir').value);
-});
+function tambahJumlah() {
+    jumlahInput.value = Math.min(parseInt(jumlahInput.value) + 1, <?= $produk['stok'] ?>);
+    updateTotal();
+}
+function kurangJumlah() {
+    jumlahInput.value = Math.max(parseInt(jumlahInput.value) - 1, 1);
+    updateTotal();
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', updateOngkirEstimasi);
+kurirSelect.addEventListener('change', updateOngkirEstimasi);
+kecamatanPembeli.addEventListener('change', updateOngkirEstimasi);
+jumlahInput.addEventListener('input', updateTotal);
 </script>
 </body>
 </html>

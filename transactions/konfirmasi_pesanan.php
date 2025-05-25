@@ -7,18 +7,20 @@ if (!isset($_SESSION['username']) || $_SESSION['jenis'] !== 'petani') {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi'])) {
-    $id_transaksi = intval($_POST['id_transaksi']);
-    $username = $_SESSION['username'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id_transaksi'];
+    $aksi = $_POST['aksi'];
 
-    $stmt = $conn->prepare("UPDATE transaksi SET status = 'terkonfirmasi' WHERE id_transaksi = ? AND id_petani = ?");
-    $stmt->bind_param("is", $id_transaksi, $username);
-
-    if ($stmt->execute()) {
-        header("Location: pesanan_masuk.php?konfirmasi=berhasil");
+    if ($aksi === 'konfirmasi') {
+        $status = 'dikonfirmasi';
+    } elseif ($aksi === 'dikirim') {
+        $status = 'dikirim';
     } else {
-        echo "Gagal mengkonfirmasi pesanan.";
+        exit("Aksi tidak valid.");
     }
+
+    mysqli_query($conn, "UPDATE transaksi SET status = '$status' WHERE id_transaksi = '$id'");
+    header("Location: pesanan_masuk.php");
     exit;
 }
 ?>
