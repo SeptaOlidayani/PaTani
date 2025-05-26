@@ -143,7 +143,7 @@ $jenis_user = $_SESSION['jenis'] ?? null;
 <body>
 
 <div class="catalog-header">
-    <h1>Katalog Produk Segar</h1>
+    <h1>Katalog Produk</h1>
     <p>Produk pilihan langsung dari petani terbaik</p>
 </div>
 

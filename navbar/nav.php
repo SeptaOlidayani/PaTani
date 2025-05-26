@@ -36,7 +36,12 @@
 <div class="submenu">
     <a href="katalog.php">Katalog</a>
     <a href="kategori.php">Kategori</a>
-    <a href="konfirmasi.php">Konfirmasi Pembayaran</a>
+    <?php
+        if (isset($_SESSION['jenis']) && $_SESSION['jenis'] === 'pembeli') {
+            echo "<a href='konfirmasi.php'>Konfirmasi Pembayaran</a>";
+        }
+        ?>
+
 </div>
 <script src="/PaTani/js/script.js"></script>
 

@@ -126,6 +126,7 @@ if ($kategori) {
             <div class="product-info">
                 <div class="product-name"><?= $nama ?></div>
                 <div class="product-price">Rp <?= $harga ?></div>
+                <?php if (isset($_SESSION['jenis']) && $_SESSION['jenis'] !== 'petani'): ?>
                 <div class="product-actions">
                     <a href="transactions/purchase.php?id_produk=<?= $id ?>" class="btn btn-success btn-sm w-50">Beli</a>
                     <form action="add_to_cart.php" method="GET" class="w-50">
@@ -133,6 +134,7 @@ if ($kategori) {
                         <button type="submit" class="btn btn-warning btn-sm w-100">🛒</button>
                     </form>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endwhile; else: ?>
