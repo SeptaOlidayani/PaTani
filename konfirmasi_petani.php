@@ -125,7 +125,7 @@ $transaksi = mysqli_query($conn, "SELECT * FROM transaksi
             </div>
         <?php endwhile; ?>
     <?php else: ?>
-        <div class="alert alert-info">Tidak ada transaksi dengan filter saat ini.</div>
+        <div class="alert alert-info">Tidak ada transaksi filter saat ini.</div>
     <?php endif; ?>
 </div>
 

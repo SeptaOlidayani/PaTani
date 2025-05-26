@@ -136,7 +136,7 @@ if ($kategori) {
             </div>
         </div>
     <?php endwhile; else: ?>
-        <p class="text-center w-100">Produk tidak ditemukan untuk kategori ini.</p>
+        <p class="text-center w-100">Produk tidak ditemukan di kategori ini.</p>
     <?php endif; ?>
 </div>
 
